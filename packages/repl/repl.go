@@ -2,6 +2,7 @@ package repl
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"io"
 
@@ -18,7 +19,8 @@ func New(r io.Reader) *REPL {
 	}
 }
 
-func (r *REPL) Run(interp interpreter.Interpreter) {
+func (r *REPL) Run(interp interpreter.Interpreter) error {
+
 	fmt.Print(">>> ")
 	for r.scanner.Scan() {
 		line := r.scanner.Text()
@@ -27,8 +29,19 @@ func (r *REPL) Run(interp interpreter.Interpreter) {
 			continue
 		}
 
-		if line == "/exit" {
-			break
+		if r.isCmd(line) {
+			res := r.exec(line)
+			if res.Err != nil {
+				if res.Err == errInvalidCmd {
+					fmt.Println("Invalid command: " + line)
+					fmt.Print(">>> ")
+					continue
+				}
+				return res.Err
+			}
+			if res.ShouldBreak {
+				break
+			}
 		}
 
 		val, err := interp.Eval(line)
@@ -39,5 +52,34 @@ func (r *REPL) Run(interp interpreter.Interpreter) {
 		}
 
 		fmt.Print(">>> ")
+	}
+
+	return nil
+}
+
+func (r *REPL) isCmd(s string) bool {
+	return s[0] == '/'
+}
+
+const (
+	exitCmd string = "/exit"
+)
+
+type cmdResult struct {
+	Err 		error
+	ShouldBreak bool
+}
+
+var errInvalidCmd = errors.New("invalid command")
+
+func (r *REPL) exec(cmd string) *cmdResult {
+	switch cmd {
+	case exitCmd:
+		return &cmdResult{
+			ShouldBreak: true,
+		}
+	}
+	return &cmdResult{
+		Err: errInvalidCmd,
 	}
 }

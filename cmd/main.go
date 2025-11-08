@@ -18,5 +18,7 @@ func main() {
 
 	REPL := repl.New(os.Stdin)
 
-	REPL.Run(interp)
+	if err := REPL.Run(interp); err != nil {
+		panic(err)
+	}
 }
