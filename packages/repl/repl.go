@@ -12,16 +12,16 @@ import (
 )
 
 type REPL struct {
-	scanner *bufio.Scanner
-	cursor 	*cursor
+	scanner     *bufio.Scanner
+	cursor      *cursor
 	inputReader *bufio.Reader
-	inputBuf	[]rune
+	inputBuf    []rune
 }
 
 func New(r io.Reader) *REPL {
 	return &REPL{
-		scanner: bufio.NewScanner(r),
-		cursor: new(cursor),
+		scanner:     bufio.NewScanner(r),
+		cursor:      new(cursor),
 		inputReader: bufio.NewReader(os.Stdin),
 	}
 }
@@ -104,7 +104,7 @@ const (
 )
 
 type cmdResult struct {
-	Err 		error
+	Err         error
 	ShouldBreak bool
 }
 

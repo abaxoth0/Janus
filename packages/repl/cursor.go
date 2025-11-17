@@ -9,7 +9,6 @@ import (
 )
 
 type cursor struct {
-
 }
 
 // Writes given char at current cursor position.
@@ -140,6 +139,6 @@ func (c *cursor) RestorePosition() *cursor {
 
 // Removes all characters in inline and moves cursor to it's beginning.
 func (c *cursor) FlushLine() *cursor {
-	fmt.Print(ansix364.EraseAll+string(ascii.CarriageReturn))
+	fmt.Print(ansix364.EraseAll + string(ascii.CarriageReturn))
 	return c
 }
