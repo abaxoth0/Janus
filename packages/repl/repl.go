@@ -7,7 +7,7 @@ import (
 	"io"
 	"os"
 
-
+	"github.com/abaxoth0/Janus/packages/ascii"
 	"github.com/abaxoth0/Janus/packages/interpreter"
 )
 
@@ -35,19 +35,17 @@ func (r *REPL) readln() (string, error) {
 			return "", err
 		}
 
-		if char == '\n' || char == '\r' {
-			r.cursor.FlushLine().WriteChar('\r')
+		if char == ascii.LineFeed || char == ascii.CarriageReturn {
+			r.cursor.FlushLine()
 			break
 		}
-		// skip unhandled ASCII control chars
-		if char <= 31 {
+		if ascii.IsControlChar(char) {
 			continue
 		}
 
-		if char == 127 { // 127 is backspace in ASCII
+		if char == ascii.Backspace {
 			if len(r.inputBuf) > 0 {
 				r.inputBuf = r.inputBuf[:len(r.inputBuf)-1]
-				r.cursor.Back().Write(" ").Back()
 			}
 			continue
 		}

@@ -117,6 +117,6 @@ func (c *cursor) RestorePosition() *cursor {
 }
 
 func (c *cursor) FlushLine() *cursor {
-	fmt.Print("\033[2K")
+	fmt.Print("\033[2K\r")
 	return c
 }
