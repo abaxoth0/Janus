@@ -2,8 +2,10 @@ package repl
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
+
+	ansix364 "github.com/abaxoth0/Janus/packages/ansix3.64"
+	"github.com/abaxoth0/Janus/packages/ascii"
 )
 
 type cursor struct {
@@ -21,12 +23,12 @@ func (c *cursor) Write(s string) *cursor {
 }
 
 func (c *cursor) Rewind() *cursor {
-	fmt.Print("\r")
+	fmt.Print(ascii.CarriageReturn)
 	return c
 }
 
 func (c *cursor) Back() *cursor {
-	fmt.Print("\033[1D")
+	fmt.Print(ansix364.Left)
 	return c
 }
 
@@ -34,12 +36,12 @@ func (c *cursor) BackN(n uint8) *cursor {
 	if n == 0 {
 		return c
 	}
-	fmt.Print("\033["+strconv.Itoa(int(n))+"D")
+	fmt.Print(ansix364.LeftN(int(n)))
 	return c
 }
 
 func (c *cursor) Forward() *cursor {
-	fmt.Print("\033[1C")
+	fmt.Print(ansix364.Right)
 	return c
 }
 
@@ -47,12 +49,12 @@ func (c *cursor) ForwardN(n uint8) *cursor {
 	if n == 0 {
 		return c
 	}
-	fmt.Print("\033["+strconv.Itoa(int(n))+"C")
+	fmt.Print(ansix364.RightN(int(n)))
 	return c
 }
 
 func (c *cursor) Up() *cursor {
-	fmt.Print("\033[1A")
+	fmt.Print(ansix364.Up)
 	return c
 }
 
@@ -60,12 +62,12 @@ func (c *cursor) UpN(n uint8) *cursor {
 	if n == 0 {
 		return c
 	}
-	fmt.Print("\033["+strconv.Itoa(int(n))+"A")
+	fmt.Print(ansix364.UpN(int(n)))
 	return c
 }
 
 func (c *cursor) Down() *cursor {
-	fmt.Print("\033[1B")
+	fmt.Print(ansix364.Down)
 	return c
 }
 
@@ -73,12 +75,12 @@ func (c *cursor) DownN(n uint8) *cursor {
 	if n == 0 {
 		return c
 	}
-	fmt.Print("\033["+strconv.Itoa(int(n))+"B")
+	fmt.Print(ansix364.DownN(int(n)))
 	return c
 }
 
 func (c *cursor) NewLine() *cursor {
-	fmt.Print("\n")
+	fmt.Print(ascii.LineFeed)
 	return c
 }
 
@@ -103,20 +105,20 @@ func (c *cursor) repeat(char rune, n uint8) *cursor {
 }
 
 func (c *cursor) NewLineN(n uint8) *cursor {
-	return c.repeat('\n', n)
+	return c.repeat(ascii.LineFeed, n)
 }
 
 func (c *cursor) SavePosition() *cursor {
-	fmt.Print("\033[s")
+	fmt.Print(ansix364.SavePosition)
 	return c
 }
 
 func (c *cursor) RestorePosition() *cursor {
-	fmt.Print("\033[u")
+	fmt.Print(ansix364.RestorePosition)
 	return c
 }
 
 func (c *cursor) FlushLine() *cursor {
-	fmt.Print("\033[2K\r")
+	fmt.Print(ansix364.EraseAll+string(ascii.CarriageReturn))
 	return c
 }
