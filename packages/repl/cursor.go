@@ -16,17 +16,17 @@ func (c *cursor) WriteChar(char rune) *cursor {
 }
 
 func (c *cursor) Write(s string) *cursor {
-	print(s)
+	fmt.Print(s)
 	return c
 }
 
 func (c *cursor) Rewind() *cursor {
-	print("\r")
+	fmt.Print("\r")
 	return c
 }
 
 func (c *cursor) Back() *cursor {
-	print("\033[1D")
+	fmt.Print("\033[1D")
 	return c
 }
 
@@ -34,12 +34,12 @@ func (c *cursor) BackN(n uint8) *cursor {
 	if n == 0 {
 		return c
 	}
-	print("\033["+strconv.Itoa(int(n))+"D")
+	fmt.Print("\033["+strconv.Itoa(int(n))+"D")
 	return c
 }
 
 func (c *cursor) Forward() *cursor {
-	print("\033[1C")
+	fmt.Print("\033[1C")
 	return c
 }
 
@@ -47,12 +47,12 @@ func (c *cursor) ForwardN(n uint8) *cursor {
 	if n == 0 {
 		return c
 	}
-	print("\033["+strconv.Itoa(int(n))+"C")
+	fmt.Print("\033["+strconv.Itoa(int(n))+"C")
 	return c
 }
 
 func (c *cursor) Up() *cursor {
-	print("\033[1A")
+	fmt.Print("\033[1A")
 	return c
 }
 
@@ -60,12 +60,12 @@ func (c *cursor) UpN(n uint8) *cursor {
 	if n == 0 {
 		return c
 	}
-	print("\033["+strconv.Itoa(int(n))+"A")
+	fmt.Print("\033["+strconv.Itoa(int(n))+"A")
 	return c
 }
 
 func (c *cursor) Down() *cursor {
-	print("\033[1B")
+	fmt.Print("\033[1B")
 	return c
 }
 
@@ -73,12 +73,12 @@ func (c *cursor) DownN(n uint8) *cursor {
 	if n == 0 {
 		return c
 	}
-	print("\033["+strconv.Itoa(int(n))+"B")
+	fmt.Print("\033["+strconv.Itoa(int(n))+"B")
 	return c
 }
 
 func (c *cursor) NewLine() *cursor {
-	print("\n")
+	fmt.Print("\n")
 	return c
 }
 
@@ -97,7 +97,7 @@ func (c *cursor) repeat(char rune, n uint8) *cursor {
 		}
 	}
 
-	print(str.String())
+	fmt.Print(str.String())
 
 	return c
 }
@@ -107,16 +107,16 @@ func (c *cursor) NewLineN(n uint8) *cursor {
 }
 
 func (c *cursor) SavePosition() *cursor {
-	print("\033[s")
+	fmt.Print("\033[s")
 	return c
 }
 
 func (c *cursor) RestorePosition() *cursor {
-	print("\033[u")
+	fmt.Print("\033[u")
 	return c
 }
 
 func (c *cursor) FlushLine() *cursor {
-	print("\033[2K")
+	fmt.Print("\033[2K")
 	return c
 }
