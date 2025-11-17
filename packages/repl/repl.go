@@ -5,27 +5,69 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"os"
+
 
 	"github.com/abaxoth0/Janus/packages/interpreter"
 )
 
 type REPL struct {
 	scanner *bufio.Scanner
+	cursor 	*cursor
+	inputReader *bufio.Reader
+	inputBuf	[]rune
 }
 
 func New(r io.Reader) *REPL {
 	return &REPL{
 		scanner: bufio.NewScanner(r),
+		cursor: new(cursor),
+		inputReader: bufio.NewReader(os.Stdin),
 	}
 }
 
-func (r *REPL) Run(interp interpreter.Interpreter) error {
+func (r *REPL) readln() (string, error) {
+	r.inputBuf = r.inputBuf[:0]
 
-	fmt.Print(">>> ")
-	for r.scanner.Scan() {
-		line := r.scanner.Text()
+	for {
+		char, _, err := r.inputReader.ReadRune()
+		if err != nil {
+			return "", err
+		}
+
+		if char == '\n' || char == '\r' {
+			r.cursor.FlushLine().WriteChar('\r')
+			break
+		}
+		// skip unhandled ASCII control chars
+		if char <= 31 {
+			continue
+		}
+
+		if char == 127 { // 127 is backspace in ASCII
+			if len(r.inputBuf) > 0 {
+				r.inputBuf = r.inputBuf[:len(r.inputBuf)-1]
+				r.cursor.Back().Write(" ").Back()
+			}
+			continue
+		}
+
+		r.inputBuf = append(r.inputBuf, char)
+		r.cursor.WriteChar(char)
+	}
+
+	return string(r.inputBuf), nil
+}
+
+func (r *REPL) Run(interp interpreter.Interpreter) error {
+	for {
+		fmt.Print("\n>>> ")
+
+		line, err := r.readln()
+		if err != nil {
+			return err
+		}
 		if line == "" {
-			fmt.Print(">>> ")
 			continue
 		}
 
@@ -34,7 +76,6 @@ func (r *REPL) Run(interp interpreter.Interpreter) error {
 			if res.Err != nil {
 				if res.Err == errInvalidCmd {
 					fmt.Println("Invalid command: " + line)
-					fmt.Print(">>> ")
 					continue
 				}
 				return res.Err
@@ -46,12 +87,11 @@ func (r *REPL) Run(interp interpreter.Interpreter) error {
 
 		val, err := interp.Eval(line)
 		if err != nil {
-			fmt.Println("Error:", err)
-		} else if val.IsValid() {
-			fmt.Println(val)
+			fmt.Print("Error:", err)
 		}
-
-		fmt.Print(">>> ")
+		if val.IsValid() {
+			fmt.Print(val)
+		}
 	}
 
 	return nil

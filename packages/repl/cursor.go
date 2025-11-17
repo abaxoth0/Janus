@@ -115,3 +115,8 @@ func (c *cursor) RestorePosition() *cursor {
 	print("\033[u")
 	return c
 }
+
+func (c *cursor) FlushLine() *cursor {
+	print("\033[2K")
+	return c
+}
