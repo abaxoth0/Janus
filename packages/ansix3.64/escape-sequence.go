@@ -1,3 +1,6 @@
+// ANSI X3.64
+//
+// Package for dealing with things that are related to ANSI X3.64 standart
 package ansix364
 
 import "strconv"

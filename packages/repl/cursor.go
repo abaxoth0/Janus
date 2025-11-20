@@ -16,6 +16,9 @@ type cursor struct {
 	savedX int
 }
 
+// IMPORTANT:
+// After creating a cursor use only it's own methods for the output.
+// Otherwise it will lead to invalid cursor behaviour.
 func newCursor(minX int) *cursor {
 	cur := new(cursor)
 
