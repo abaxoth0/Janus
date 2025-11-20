@@ -9,5 +9,5 @@ func IsControlChar(c Char) bool {
 }
 
 func IsAlpha(c Char) bool {
-	return (c>= 'A' && c <= 'Z') || (c>= 'a' && c <= 'z')
+	return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')
 }

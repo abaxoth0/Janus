@@ -22,7 +22,7 @@ const (
 	EraseAll        EscapeSequence = "\033[2K" // Erase entire line.
 	SavePosition    EscapeSequence = "\033[7"  // Save current cursor position.
 	RestorePosition EscapeSequence = "\033[8"  // Restore saved cursor position.
-	OutputPosition	EscapeSequence = "\033[6n" // Output current cursor position.
+	OutputPosition  EscapeSequence = "\033[6n" // Output current cursor position.
 )
 
 // Control Sequence Introducer (or CSI), is a key component of ANSI escape codes

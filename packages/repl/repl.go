@@ -35,7 +35,7 @@ func (r *REPL) handleEscSeq(seq string) {
 	case ansix364.Left:
 		r.cursor.Back()
 	case ansix364.Right:
-		if r.cursor.GetX() < len(r.inputBuf) - 1 + len(InputPrefx) {
+		if r.cursor.GetX() < len(r.inputBuf)-1+len(InputPrefx) {
 			r.cursor.Forward()
 		}
 	default:
@@ -114,7 +114,7 @@ func (r *REPL) Run(interp interpreter.Interpreter) error {
 	}
 	defer term.Restore(stdin, oldState)
 
-	r.cursor = newCursor(len(InputPrefx)-1).Rewind()
+	r.cursor = newCursor(len(InputPrefx) - 1).Rewind()
 
 	for {
 		fmt.Print(InputPrefx)

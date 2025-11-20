@@ -11,9 +11,9 @@ import (
 )
 
 type cursor struct {
-	x		int
-	minX 	int
-	savedX	int
+	x      int
+	minX   int
+	savedX int
 }
 
 func newCursor(minX int) *cursor {
@@ -38,7 +38,7 @@ func (c *cursor) GetX() int {
 
 // Uses ANSI X3.64 escape sequence to get current X and Y
 // cursor position in terminal and return it.
-func (c *cursor) FetchPosition() (x int, y int){
+func (c *cursor) FetchPosition() (x int, y int) {
 	inputReader := bufio.NewReader(os.Stdin)
 
 	fmt.Print(ansix364.OutputPosition)
@@ -48,7 +48,7 @@ func (c *cursor) FetchPosition() (x int, y int){
 		panic(err)
 	}
 
-	_, err = fmt.Sscanf(str,"\033[%d;%dR", &y, &x)
+	_, err = fmt.Sscanf(str, "\033[%d;%dR", &y, &x)
 	if err != nil {
 		panic(err)
 	}
@@ -198,7 +198,7 @@ func (c *cursor) repeat(char rune, n int, moveX bool) *cursor {
 			panic(err)
 		}
 	}
-	if moveX{
+	if moveX {
 		c.x += n
 	}
 	fmt.Print(str.String())
