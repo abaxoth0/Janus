@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 
 	ansix364 "github.com/abaxoth0/Janus/packages/ansix3.64"
 	"github.com/abaxoth0/Janus/packages/ascii"
@@ -132,13 +133,16 @@ func (r *REPL) Run(interp interpreter.Interpreter) error {
 			res := r.exec(line)
 			if res.Err != nil {
 				if res.Err == errInvalidCmd {
-					r.cursor.Writeln("Invalid command: " + line)
+					r.cursor.NewLine().Write("Invalid command: " + line)
 					continue
 				}
 				return res.Err
 			}
 			if res.ShouldBreak {
 				break
+			}
+			if res.Code != "" {
+				line = res.Code
 			}
 		}
 
@@ -160,20 +164,37 @@ func (r *REPL) isCmd(s string) bool {
 
 const (
 	exitCmd string = "/exit"
+	typeCmd string = "/type"
 )
 
 type cmdResult struct {
 	Err         error
 	ShouldBreak bool
+	Code		string
 }
 
 var errInvalidCmd = errors.New("invalid command")
 
 func (r *REPL) exec(cmd string) *cmdResult {
-	switch cmd {
+	splitCmd := strings.Split(cmd, " ")
+
+	var cmdType  string = splitCmd[0]
+	var cmdValue string
+
+	switch cmdType {
 	case exitCmd:
 		return &cmdResult{
 			ShouldBreak: true,
+		}
+	case typeCmd:
+		cmdValue = splitCmd[1]
+		if len(splitCmd) != 2 {
+			return &cmdResult{
+				Err: errors.New("Invalid command format, use case example: /type <identifier>"),
+			}
+		}
+		return &cmdResult{
+			Code: `fmt.Sprintf("%T",`+cmdValue+`);`,
 		}
 	}
 	return &cmdResult{

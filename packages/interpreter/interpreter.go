@@ -15,6 +15,22 @@ const (
 	ThirdParty Type = 1 << iota
 )
 
+var defaultImports []string = []string{
+	`"fmt"`,
+	`"os"`,
+	`"io"`,
+	`"strings"`,
+	`"strconv"`,
+	`"bytes"`,
+	`"net/http"`,
+	`"encoding/json"`,
+	`"context"`,
+	`"sync"`,
+	`"testing"`,
+	`"time"`,
+	`"regexp"`,
+}
+
 var ErrInvalidInterpreterType = errors.New("invalid interpreter type")
 
 func New(t Type) (Interpreter, error) {
