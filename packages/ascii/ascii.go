@@ -7,3 +7,7 @@ type Char = rune
 func IsControlChar(c Char) bool {
 	return c <= 31
 }
+
+func IsAlpha(c Char) bool {
+	return (c>= 'A' && c <= 'Z') || (c>= 'a' && c <= 'z')
+}
