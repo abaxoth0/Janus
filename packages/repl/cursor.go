@@ -182,7 +182,7 @@ func (c *cursor) DownN(n int) *cursor {
 
 // Moves cursor to the beginning of new line.
 func (c *cursor) NewLine() *cursor {
-	fmt.Print(ascii.LineFeed)
+	fmt.Print(string(ascii.CarriageReturn)+string(ascii.LineFeed))
 	c.x = c.minX
 	return c
 }

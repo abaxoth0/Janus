@@ -147,7 +147,7 @@ func (r *REPL) Run(interp interpreter.Interpreter) error {
 			r.cursor.Writeln("Error:" + err.Error())
 		}
 		if val.IsValid() {
-			r.cursor.NewLine().Rewind().RawWrite(val)
+			r.cursor.NewLine().RawWrite(val)
 		}
 	}
 
