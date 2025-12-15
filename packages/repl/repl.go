@@ -47,7 +47,7 @@ func (r *REPL) Run(interp interpreter.Interpreter) error {
 		}
 
 		if r.isCmd(line) {
-			res := r.exec(line)
+			res := r.execCmd(line)
 			if res.Err != nil {
 				if res.Err == errInvalidCmd {
 					fmt.Printf("Invalid command: \"%s\"\n", line)
@@ -57,6 +57,9 @@ func (r *REPL) Run(interp interpreter.Interpreter) error {
 			}
 			if res.ShouldBreak {
 				break
+			}
+			if res.ShouldContinue {
+				continue
 			}
 			if res.Code != "" {
 				line = res.Code
@@ -82,17 +85,19 @@ func (r *REPL) isCmd(s string) bool {
 const (
 	exitCmd string = "/exit"
 	typeCmd string = "/type"
+	helpCmd string = "/help"
 )
 
 type cmdResult struct {
-	Err         error
-	ShouldBreak bool
-	Code		string
+	Code		   string
+	Err            error
+	ShouldBreak    bool
+	ShouldContinue bool
 }
 
 var errInvalidCmd = errors.New("invalid command")
 
-func (r *REPL) exec(cmd string) *cmdResult {
+func (r *REPL) execCmd(cmd string) *cmdResult {
 	splitCmd := strings.Split(cmd, " ")
 
 	var cmdType  string = splitCmd[0]
@@ -113,8 +118,20 @@ func (r *REPL) exec(cmd string) *cmdResult {
 		return &cmdResult{
 			Code: `fmt.Sprintf("%T",`+cmdValue+`);`,
 		}
+	case helpCmd:
+		fmt.Print(cmdHelpMessage)
+		return &cmdResult{
+			ShouldContinue: true,
+		}
 	}
 	return &cmdResult{
 		Err: errInvalidCmd,
 	}
 }
+
+const cmdHelpMessage string =
+`Available commands:
+ 	/help - show this message
+	/exit - exit this programm
+	/type <value> - show type of the given value/identifier
+`
