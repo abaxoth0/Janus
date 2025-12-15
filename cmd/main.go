@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	fmt.Println("Janus — simple REPL (Read-Eval-Print Loop) for Golang. Type \"/exit\" to exit")
+	fmt.Println("Janus — simple REPL (Read-Eval-Print Loop) for Golang. Type \"/help\" to see available commands.")
 
 	interp, err := interpreter.New(interpreter.ThirdParty)
 	if err != nil {

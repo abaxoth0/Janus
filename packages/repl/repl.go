@@ -2,11 +2,9 @@ package repl
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"io"
 	"os"
-	"strings"
 
 	"github.com/abaxoth0/Janus/packages/interpreter"
 	"github.com/chzyer/readline"
@@ -46,11 +44,11 @@ func (r *REPL) Run(interp interpreter.Interpreter) error {
 			continue
 		}
 
-		if r.isCmd(line) {
-			res := r.execCmd(line)
+		if isCmd(line) {
+			res := execCmd(line)
 			if res.Err != nil {
 				if res.Err == errInvalidCmd {
-					fmt.Printf("Invalid command: \"%s\"\n", line)
+					fmt.Printf("Invalid command: \"%s\" (type \"/help\" to see available commands)\n", line)
 					continue
 				}
 				return res.Err
@@ -77,61 +75,3 @@ func (r *REPL) Run(interp interpreter.Interpreter) error {
 
 	return nil
 }
-
-func (r *REPL) isCmd(s string) bool {
-	return s[0] == '/'
-}
-
-const (
-	exitCmd string = "/exit"
-	typeCmd string = "/type"
-	helpCmd string = "/help"
-)
-
-type cmdResult struct {
-	Code		   string
-	Err            error
-	ShouldBreak    bool
-	ShouldContinue bool
-}
-
-var errInvalidCmd = errors.New("invalid command")
-
-func (r *REPL) execCmd(cmd string) *cmdResult {
-	splitCmd := strings.Split(cmd, " ")
-
-	var cmdType  string = splitCmd[0]
-	var cmdValue string
-
-	switch cmdType {
-	case exitCmd:
-		return &cmdResult{
-			ShouldBreak: true,
-		}
-	case typeCmd:
-		cmdValue = splitCmd[1]
-		if len(splitCmd) != 2 {
-			return &cmdResult{
-				Err: errors.New("Invalid command format, use case example: /type <identifier>"),
-			}
-		}
-		return &cmdResult{
-			Code: `fmt.Sprintf("%T",`+cmdValue+`);`,
-		}
-	case helpCmd:
-		fmt.Print(cmdHelpMessage)
-		return &cmdResult{
-			ShouldContinue: true,
-		}
-	}
-	return &cmdResult{
-		Err: errInvalidCmd,
-	}
-}
-
-const cmdHelpMessage string =
-`Available commands:
- 	/help - show this message
-	/exit - exit this programm
-	/type <value> - show type of the given value/identifier
-`
