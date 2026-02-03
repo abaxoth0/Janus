@@ -120,13 +120,14 @@ func (r *REPL) Run(interp interpreter.Interpreter) error {
 		}
 
 		if isCmd(input) {
-			res := execCmd(input)
+			res := runCmd(input)
 			if res.Err != nil {
-				if res.Err == errInvalidCmd {
-					fmt.Printf("Invalid command: \"%s\" (type \"/help\" to see available commands)\n", input)
+				if res.Err == errUnknownCmd {
+					fmt.Printf("Unknown command: \"%s\" (type \"/help\" to see available commands)\n", input)
 					continue
 				}
-				return res.Err
+				fmt.Println("Error:", res.Err.Error())
+				continue
 			}
 			if res.ShouldBreak {
 				break
